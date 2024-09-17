@@ -1,0 +1,42 @@
+#header{
+    background-color: #c7d5e4;
+    font-size: 300%;
+    color: gray;
+    font-weight: bold;
+    text-align: center;
+}
+
+#body{
+    display: flex;
+    height: 100vh;
+}
+
+#mainMenu{
+    background-color: darkslategray;
+    color: white;
+}
+
+#content{
+    background-color: #F0FFF0;
+    flex-grow: 1;
+}
+
+#mainMenu ul {
+    padding: 0;
+    margin: 0;
+}
+
+#mainMenu ul li {
+    list-style: none;
+    min-width: 6em;
+    padding: .2em .5em;
+}
+
+#mainMenu ul li :hover{
+    background-color: rgb(76, 118, 33);
+}
+
+#mainMenu ul li a {
+    text-decoration: none;
+    color: white;
+}

@@ -1,0 +1,59 @@
+components:
+  schemas:
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+          required: true
+          example: test
+        displayName: 
+          type: string
+          required: true
+          example: Test
+        password:
+          type: string
+          required: true
+          example: 1234
+
+/user:
+  get:
+    tags:
+      - User
+    summary: Get a users list
+    produce:
+      - application/json
+    parameters:
+      - name: username
+        in: query
+    responses:
+      '200': 
+        description: Success
+        content:
+          application/json:
+            type: object
+            properties:
+              username:
+                type: string
+              displayName:
+                type: String
+      '404':
+        description: Not found
+
+  post:
+    tags:
+      - User
+    summary: add a new user from body data
+    consumes:
+      - application/json
+    requestBody:
+      required: true
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserCreate'
+    responses:
+      '204':
+        description: no content
+      '400':
+        description: error 400
