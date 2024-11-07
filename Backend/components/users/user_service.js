@@ -1,6 +1,6 @@
 import { ConflictError } from '../../libs/conflict_error.js';
 import { Dependency } from '../../libs/dependency.js';
-import { MissinParameterError } from '../../libs/missing_parameter_error.js';
+import { MissingParameterError } from '../../libs/missing_parameter_error.js';
 import bcrypt from 'bcrypt';
 import * as uuid from 'uuid';
 
@@ -57,15 +57,15 @@ export class UserService{
 
     async create(data){
         if(!data?.username){
-            throw new MissinParameterError('username');
+            throw new MissingParameterError('username');
         }
 
         if(!data.displayName){
-            throw new MissinParameterError('displayName');
+            throw new MissingParameterError('displayName');
         }
 
         if(!data.password){
-            throw new MissinParameterError('password');
+            throw new MissingParameterError('password');
         }
 
         if (await this.getForUsernameOrNull(data.username)){

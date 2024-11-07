@@ -16,7 +16,7 @@ function App() {
 
         const auth = sessionStorage.getItem('Authorization');
         if (auth) {
-            Api.defaultHeaders.headers.Authorization = auth;
+            Api.defaultHeaders.Authorization = auth;
             const roles = JSON.parse(sessionStorage.getItem('roles') ?? '[]');
             setRoles(roles);
         } 

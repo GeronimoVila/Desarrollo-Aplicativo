@@ -4,10 +4,16 @@ import { configureSwagger } from './swagger.js';
 import { configureDependencies } from './dependencies.js';
 import { configureMiddlewares } from './middlewares.js';
 import { Dependency } from './libs/dependency.js';
+import mongoose from 'mongoose';
 
 configureDependencies();
 
 const conf = Dependency.get('conf');
+
+mongoose.connect(conf.mongodbUri)
+    .then(() => console.log('Conexión a MongoDB exitosa'))
+    .catch(err => console.error('Error al conectar a MongoDB', err));
+
 const app = express();
 const router = configureMiddlewares(app);
 configureRoutes(router);

@@ -1,17 +1,17 @@
 const urlBase = 'http://localhost:4000/api';
 
 export class Api {
-    defaultHeaders = {
+    static defaultHeaders = {
         'Content-Type': 'application/json'
     };
 
-    static setMessageForAutoCheck = null
+    static setMessageForAutoCheck = null;
 
-    static async fetch (service, options) {
+    static async fetch(service, options) {
         options = { headers: {}, ...options };
         options.headers = { ...Api.defaultHeaders, ...options.headers };
 
-        if (options.body && typeof options.body != 'string') {
+        if (options.body && typeof options.body !== 'string') {
             options.body = JSON.stringify(options.body);
         }
 
@@ -22,44 +22,47 @@ export class Api {
             if (typeof search !== 'string') {
                 search = new URLSearchParams(search).toString();
             }
-
             url += '?' + search;
         }
 
-        const res = await fetch(url, options);
-
-        if (options.autoCheck === false) {
-            return res;
-        }
-
-        if (res.ok) {
-            return res;
-        }
-        
-        let message = '';
         try {
-            const data = await res.json ();
-            message = data.message || data.error;
-        } catch (e) {
-            message = 'Error desconocido';
+            console.log('Fetching URL:', url); // Log de la URL
+            console.log('Options:', options); // Log de las opciones
+
+            const res = await fetch(url, options);
+            
+            if (res.ok) {
+                return res.json(); // Retornar JSON directamente si la respuesta es exitosa
+            }
+
+            let message = '';
+            try {
+                const data = await res.json();
+                message = data.message || data.error;
+            } catch (e) {
+                message = 'Error desconocido al parsear la respuesta';
+            }
+
+            if (Api.setMessageForAutoCheck) {
+                Api.setMessageForAutoCheck(message);
+            }
+
+            throw new Error(message);
+        } catch (error) {
+            console.error('Error en fetch:', error); // Log de error
+            throw new Error('Error en la petición: ' + error.message);
         }
-
-        if (Api.setMessageForAutoCheck) {
-            Api.setMessageForAutoCheck (message);
-        }
-
-        throw new Error (message);
     }
 
-    static get(servicio, options){
-        return Api.fetch(servicio, { ...options, method: 'GET'});
+    static get(service, options) {
+        return Api.fetch(service, { ...options, method: 'GET' });
     }
 
-    static post(servicio, options){
-        return Api.fetch(servicio, { ...options, method: 'POST'});
+    static post(service, options) {
+        return Api.fetch(service, { ...options, method: 'POST' });
     }
 
-    static delete(servicio, options){
-        return Api.fetch(servicio, { ...options, method: 'DELETE'});
+    static delete(service, options) {
+        return Api.fetch(service, { ...options, method: 'DELETE' });
     }
 }

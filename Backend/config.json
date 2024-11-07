@@ -2,5 +2,5 @@
   "port": "4000",
   "clientPort": "3000",
   "jwtPassword": "1234",
-  "mongodbUri": "mongodb://localhost:27017/tu_nombre_de_base_de_datos"
+  "mongodbUri": "mongodb://localhost:27017/Aplicativo"
 }

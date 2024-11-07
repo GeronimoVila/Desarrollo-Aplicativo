@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import PropTypes from 'prop-types'; // Importamos prop-types
+import PropTypes from 'prop-types';
 import NoEmptyError from './NoEmptyError';
 import { Api } from '../lib/api';
 import IconLogin from '@mui/icons-material/Login';
@@ -9,6 +9,7 @@ import IconSubmit from '@mui/icons-material/Send';
 
 const Login = ({ setRoles }) => {
     const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     function handleLogin(evt) {
@@ -20,19 +21,25 @@ const Login = ({ setRoles }) => {
             password: evt.target.password.value,
         };
 
+        console.log('Username:', data.username);
+        console.log('Password:', data.password);
+
         Api.post('login', { body: data, autoCheck: false })
-            .then(res => res.json())
-            .then(json => {
+            .then(json => { 
                 if (json.error) {
                     setError(json.message);
                 } else {
                     const auth = 'Bearer ' + json.authorizationToken;
                     const roles = json.roles || [];
+                    const userUuid = json.uuid;
 
-                    sessionStorage.setItem('Authorization', auth);
-                    sessionStorage.setItem('roles', JSON.stringify(roles));
+                    // Guardar datos en localStorage
+                    localStorage.setItem('Authorization', auth);
+                    localStorage.setItem('roles', JSON.stringify(roles));
+                    localStorage.setItem('uuid', userUuid);
 
-                    Api.defaultHeaders.headers.Authorization = auth;
+                    // Configurar encabezado de autorización
+                    Api.defaultHeaders.Authorization = auth;
                     setRoles(roles);
                     navigate('/home');
                 }
@@ -57,15 +64,33 @@ const Login = ({ setRoles }) => {
                 <ul className="fields">
                     <li className="field">
                         <label htmlFor="username">Nombre de usuario</label>
-                        <input id="username" name="username"></input>
+                        <input id="username" name="username" required></input> {/* Añadido required */}
                     </li>
                     <li className="field">
                         <label htmlFor="password">Contraseña</label>
-                        <input id="password" name="password" type="password"></input>
+                        <input 
+                            id="password" 
+                            name="password" 
+                            type={showPassword ? 'text' : 'password'} 
+                            required 
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="toggle-password"
+                        >
+                            {showPassword ? "Ocultar" : "Mostrar"}
+                        </button>
                     </li>
                     <li className='field center'>
-                        <button type="submit"><IconSubmit className="icon submit" />Login</button>
-                        <Link to='/home'><button type="button"><IconCancel className="icon cancel" />Cancelar</button></Link>
+                        <button type="submit">
+                            <IconSubmit className="icon submit" />Login
+                        </button>
+                        <Link to='/home'>
+                            <button type="button">
+                                <IconCancel className="icon cancel" />Cancelar
+                            </button>
+                        </Link>
                     </li>
                 </ul>
             </form>
@@ -73,7 +98,6 @@ const Login = ({ setRoles }) => {
     );
 }
 
-// Añadimos la validación de prop-types para setRoles
 Login.propTypes = {
     setRoles: PropTypes.func.isRequired,
 };

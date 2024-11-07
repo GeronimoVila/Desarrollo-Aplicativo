@@ -1,24 +1,24 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import fs from 'fs/promises';
 
-export const conf = loadConfig();
+export const conf = await loadConfig();
 
-function loadConfig() {
-  let data;
+async function loadConfig() {
+  let text;
   
-  if (existsSync('config.json')) {
-    data = readFileSync('./config.json');
+  if (existsSync('./config.json')) {
+    text = await fs.readFile('./config.json');
   } else {
-    data = '{}';
+    text = '{}';
   }
-  const global = JSON.parse(data);
+  const global = JSON.parse(text);
 
-  if (existsSync('config.local.json')) {
-    data = readFileSync('./config.local.json');
+  if (existsSync('./config.local.json')) {
+    text = await fs.readFile('./config.local.json');
   } else {
-    data = '{}';
+    text = '{}';
   }
-  const locals = JSON.parse(data);
+  const locals = JSON.parse(text);
 
   return {
     ...global,
